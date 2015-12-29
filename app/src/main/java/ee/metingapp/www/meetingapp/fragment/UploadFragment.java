@@ -5,12 +5,12 @@ package ee.metingapp.www.meetingapp.fragment;
  */
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +31,8 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-
 import java.io.File;
 import java.io.IOException;
-
 import app.AppConfig;
 import ee.metingapp.www.meetingapp.MainActivity;
 import ee.metingapp.www.meetingapp.R;

@@ -1,9 +1,9 @@
 package ee.metingapp.www.meetingapp.fragment;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -25,7 +22,6 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import ee.metingapp.www.meetingapp.MainActivity;
 import ee.metingapp.www.meetingapp.R;
 import ee.metingapp.www.meetingapp.data.ChatListAdapter;
 import ee.metingapp.www.meetingapp.data.Message;

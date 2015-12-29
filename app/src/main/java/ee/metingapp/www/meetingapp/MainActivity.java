@@ -1,7 +1,6 @@
 package ee.metingapp.www.meetingapp;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,7 +33,6 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +44,7 @@ import ee.metingapp.www.meetingapp.fragment.HotOrNotFragment;
 import ee.metingapp.www.meetingapp.fragment.PreferencesFragment;
 import ee.metingapp.www.meetingapp.view.ImageConverter;
 import ee.metingapp.www.meetingapp.view.NavigationDrawerActivity;
+import ee.metingapp.www.meetingapp.view.TestAdapter;
 import utils.SQLiteHandler;
 import utils.SessionManager;
 
@@ -70,12 +69,19 @@ public class MainActivity extends AppCompatActivity{
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userName = (TextView)findViewById(R.id.userName);
         app_layer = (LinearLayout) findViewById (R.id.user_profile);
+
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new TestAdapter(getSupportFragmentManager()));
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
+
         goToUserProfile();
         makeCustomActionBar();
         //makeCustomActionBar();
@@ -121,7 +127,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 TakeSnapActivity fragment = new TakeSnapActivity();
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(R.id.mainContent, fragment)
                         .commit();
@@ -135,14 +141,10 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    private void initTabs(){
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        pager = (ViewPager) findViewById(R.id.pager);
-    }
 
     private void startMainFragment() {
-        android.app.Fragment fragment = new HomeFragment();
-        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = new HomeFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.mainContent, fragment)
                 .commit();
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void selectItemFromDrawer(int position) {
-        android.app.Fragment fragment = new PreferencesFragment();
+        Fragment fragment = new PreferencesFragment();
         switch (position){
             case 0:
                 fragment = new HomeFragment();
@@ -185,7 +187,7 @@ public class MainActivity extends AppCompatActivity{
                 fragment = new HomeFragment();
 
         }
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.mainContent, fragment)
                 .commit();
@@ -338,11 +340,8 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(MainActivity.this, fragmentTransaction, hotOrNotFragment, chatFragment, R.id.mainContent);
-                fragmentTransactionExtended.addTransition(FragmentTransactionExtended.ACCORDION);
-                fragmentTransactionExtended.commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.mainContent, hotOrNotFragment).commit();
                 YoYo.with(Techniques.Wobble)
                         .duration(700)
                         .playOn(findViewById(R.id.hot_or_not_button));
@@ -355,11 +354,8 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(MainActivity.this, fragmentTransaction, hotOrNotFragment, chatFragment, R.id.mainContent);
-                fragmentTransactionExtended.addTransition(0);
-                fragmentTransactionExtended.commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.mainContent, chatFragment).commit();
                 YoYo.with(Techniques.Wobble)
                         .duration(700)
                         .playOn(findViewById(R.id.chat_button));
