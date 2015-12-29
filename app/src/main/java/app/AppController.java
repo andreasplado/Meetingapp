@@ -10,10 +10,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.parse.Parse;
+import com.parse.ParseObject;
 
+import ee.metingapp.www.meetingapp.data.Message;
 import utils.LruBitmapCache;
 
 public class AppController extends Application {
+
+    public static final String APPLICATION_ID = "iuVrVkaoKgydb27ocTvGEQOBSFAJIvVlzbSOSKJI";
+    public static final String CLIENT_KEY = "MzBYxmWI9I3qEe22rhchYIiSU6H4PF6sr6hXxMQU";
 
     public static final String TAG = AppController.class
             .getSimpleName();
@@ -26,7 +32,11 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Register your parse models here
+        ParseObject.registerSubclass(Message.class);
         mInstance = this;
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, APPLICATION_ID, CLIENT_KEY);
     }
 
     public static synchronized AppController getInstance() {
