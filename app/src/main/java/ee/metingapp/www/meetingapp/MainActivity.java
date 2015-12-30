@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,18 +30,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ee.metingapp.www.meetingapp.adapters.SampleFragmentPagerAdapter;
+import ee.metingapp.www.meetingapp.adapters.MainActivityFragmentPagerAdapter;
 import ee.metingapp.www.meetingapp.customelements.ImageConverter;
 import ee.metingapp.www.meetingapp.customelements.NavigationDrawerActivity;
-import ee.metingapp.www.meetingapp.fragment.ChatFragment;
 import ee.metingapp.www.meetingapp.fragment.HelpFragment;
 import ee.metingapp.www.meetingapp.fragment.HomeFragment;
-import ee.metingapp.www.meetingapp.fragment.HotOrNotFragment;
 import ee.metingapp.www.meetingapp.fragment.PreferencesFragment;
 import utils.SQLiteHandler;
 import utils.SessionManager;
@@ -54,17 +49,14 @@ public class MainActivity extends AppCompatActivity{
     private TextView userName;
     private LinearLayout app_layer;
     private ImageView imgProfilePic;
-    private ImageButton imgBtnCapture, menuButton, hotOrNotButton, chatButton;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private ImageButton imgBtnCapture;
     private DrawerLayout mDrawerLayout;
     private SQLiteHandler db;
     private SessionManager session;
     private boolean doubleBackToExitPressedOnce = false;
     private ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-    private HotOrNotFragment hotOrNotFragment = new HotOrNotFragment();
-    private ChatFragment chatFragment = new ChatFragment();
-    private PagerSlidingTabStrip pagerSlidingTabStrip;
-    private ViewPager viewPager;
+    private TabLayout tabLayoutMainActivity;
+    private ViewPager viewPagerPages;
 
 
     @Override
@@ -90,7 +82,6 @@ public class MainActivity extends AppCompatActivity{
     private void fetchData() {
         // Fetching user details from sqlite
         HashMap<String, String> user = db.getUserDetails();
-
         String name = user.get("name");
         String email = user.get("email");
         userName.setText(name);
@@ -131,53 +122,6 @@ public class MainActivity extends AppCompatActivity{
                 Log.e("info:", "Vajutasid nupule pildista");
             }
         });
-        /*menuButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    YoYo.with(Techniques.ZoomIn)
-                            .duration(700)
-                            .playOn(findViewById(R.id.menu_button));
-                }else {
-                    mDrawerLayout.openDrawer(Gravity.LEFT);
-                    YoYo.with(Techniques.ZoomIn)
-                            .duration(700)
-                            .playOn(findViewById(R.id.menu_button));
-                }
-            }
-        });
-
-        hotOrNotButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.mainContent, hotOrNotFragment).commit();
-                YoYo.with(Techniques.Wobble)
-                        .duration(700)
-                        .playOn(findViewById(R.id.hot_or_not_button));
-                mDrawerLayout.closeDrawers();
-                hotOrNotButton.setClickable(false);
-                chatButton.setClickable(true);
-            }
-        });
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.mainContent, chatFragment).commit();
-                YoYo.with(Techniques.Wobble)
-                        .duration(700)
-                        .playOn(findViewById(R.id.chat_button));
-                mDrawerLayout.closeDrawers();
-                chatButton.setClickable(false);
-                hotOrNotButton.setClickable(true);
-            }
-        });
-        */
     }
 
     private void findViews() {
@@ -188,24 +132,17 @@ public class MainActivity extends AppCompatActivity{
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.mainContent);
-        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
+        viewPagerPages = (ViewPager) findViewById(R.id.mainContent);
+        viewPagerPages.setAdapter(new MainActivityFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this));
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayoutMainActivity = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayoutMainActivity.setupWithViewPager(viewPagerPages);
     }
 
     private void createViews(){
-
-
-
         Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.lanny_barbie);
         Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(bitmap, 300);
         imgProfilePic.setImageBitmap(circularBitmap);
-
         //make drawer
         mNavItems.add(new NavItem("Home", "Meetup destination", R.drawable.abc_btn_radio_material));
         mNavItems.add(new NavItem("Preferences", "Change your preferences", R.drawable.abc_btn_radio_material));

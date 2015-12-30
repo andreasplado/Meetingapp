@@ -18,7 +18,7 @@ import ee.metingapp.www.meetingapp.fragment.TakeSnapFragment;
 /**
  * Created by Andreas on 30.12.2015.
  */
-public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class MainActivityFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[] { "Users", "Chat", "Capture" };
     private int[] imageResId = {
@@ -28,7 +28,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     };
     private Context context;
 
-    public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
+    public MainActivityFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
     }
@@ -60,6 +60,6 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         SpannableString sb = new SpannableString(" ");
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
         sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return tabTitles[position];
+        return sb;
     }
 }

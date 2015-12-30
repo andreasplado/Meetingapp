@@ -1,18 +1,18 @@
 package ee.metingapp.www.meetingapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 
-public class UserProfileActivity extends Activity {
+public class UserProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_user_profile);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_edit_user);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
