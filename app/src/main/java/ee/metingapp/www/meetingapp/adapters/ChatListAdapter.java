@@ -1,4 +1,4 @@
-package ee.metingapp.www.meetingapp.data;
+package ee.metingapp.www.meetingapp.adapters;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -16,6 +16,7 @@ import java.security.MessageDigest;
 import java.util.List;
 
 import ee.metingapp.www.meetingapp.R;
+import ee.metingapp.www.meetingapp.data.Message;
 
 /**
  * Created by mart22n on 29.12.2015.

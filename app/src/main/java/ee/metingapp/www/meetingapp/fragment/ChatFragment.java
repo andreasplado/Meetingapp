@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ee.metingapp.www.meetingapp.R;
-import ee.metingapp.www.meetingapp.data.ChatListAdapter;
+import ee.metingapp.www.meetingapp.adapters.ChatListAdapter;
 import ee.metingapp.www.meetingapp.data.Message;
 
 /**
@@ -33,21 +33,18 @@ public class ChatFragment extends Fragment {
 
     private static String sUserId;
     private static final String TAG = ChatFragment.class.getName();
-
     public static final String USER_ID_KEY = "userId";
     private static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
-
     private EditText etMessage;
     private Button btSend;
     private View view;
-
     private ListView lvChat;
     private ArrayList<Message> mMessages;
     private ChatListAdapter mAdapter;
     // Keep track of initial load to scroll to the bottom of the ListView
     private boolean mFirstLoad;
-
     private Handler handler = new Handler();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,

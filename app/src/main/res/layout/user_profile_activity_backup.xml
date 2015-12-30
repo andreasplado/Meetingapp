@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/lanny_barbie" />
 
-    <ee.metingapp.www.meetingapp.view.CustomText
+    <ee.metingapp.www.meetingapp.customelements.CustomText
         android:id="@+id/fullname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 android:textSize="15dp"
                 android:layout_marginTop="50dp"/>
 
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,13 +59,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="Zillah_Modern_Expanded.tff"
                 android:text="Surname:"
                 android:textSize="15dp" />
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,13 +81,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="Zillah_Modern_Expanded.tff"
                 android:text="Age:"
                 android:textSize="15dp" />
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:id="@+id/age"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,13 +103,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="Zillah_Modern_Expanded.tff"
                 android:text="Gender:"
                 android:textSize="15dp" />
-            <ee.metingapp.www.meetingapp.view.CustomText
+            <ee.metingapp.www.meetingapp.customelements.CustomText
                 android:id="@+id/gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

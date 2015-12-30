@@ -31,27 +31,37 @@ import ee.metingapp.www.meetingapp.fragment.UploadFragment;
 
 public class TakeSnapActivity extends Fragment {
 
-    // LogCat tag
-    private static final String TAG = MainActivity.class.getSimpleName();
-    // Camera activity request codes
+
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private Uri fileUri; // file url to store image/video
+    private Uri fileUri;
     private Button btnCapturePicture, btnRecordVideo;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle
                                      savedInstanceState) {
-
-        // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_take_snap,
                 container, false);
-        btnCapturePicture = (Button) view.findViewById(R.id.btnCapturePicture);
-        btnRecordVideo = (Button) view.findViewById(R.id.btnRecordVideo);
+        findViews(view);
+        createViews(view);
+        addLinksToViews(view);
+        checkCameraAvailibility();
+        return view;
+    }
 
+    private void checkCameraAvailibility() {
+        // Checking camera availability
+        if (!isDeviceSupportCamera()) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "Sorry! Your device doesn't support camera",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addLinksToViews(View view) {
         /**
          * Capture image button click event
          */
@@ -76,13 +86,14 @@ public class TakeSnapActivity extends Fragment {
             }
         });
 
-        // Checking camera availability
-        if (!isDeviceSupportCamera()) {
-            Toast.makeText(getActivity().getApplicationContext(),
-                    "Sorry! Your device doesn't support camera",
-                    Toast.LENGTH_LONG).show();
-        }
-        return view;
+    }
+
+    private void createViews(View view) {
+    }
+
+    private void findViews(View view) {
+        btnCapturePicture = (Button) view.findViewById(R.id.btnCapturePicture);
+        btnRecordVideo = (Button) view.findViewById(R.id.btnRecordVideo);
     }
 
 
@@ -232,7 +243,7 @@ public class TakeSnapActivity extends Fragment {
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d(TAG, "Oops! Failed create "
+                Log.d("dd", "Oops! Failed create "
                         + AppConfig.IMAGE_DIRECTORY_NAME + " directory");
                 return null;
             }

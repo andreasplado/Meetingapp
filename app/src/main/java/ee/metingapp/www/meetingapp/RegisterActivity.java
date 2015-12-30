@@ -28,12 +28,12 @@ import java.util.Map;
 
 import app.AppConfig;
 import app.AppController;
-import ee.metingapp.www.meetingapp.view.SwitchButton;
+import ee.metingapp.www.meetingapp.customelements.SwitchButton;
 import utils.SQLiteHandler;
 import utils.SessionManager;
 
 public class RegisterActivity extends Activity implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = RegisterActivity.class.getSimpleName();
+
     private Button btnRegister;
     private Button btnLinkToLogin;
     private Button btnSelectDate;
@@ -50,23 +50,14 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        findViews();
+        createViews();
+        addLinksToViews();
+        manageSession();
 
-        inputFullName = (EditText) findViewById(R.id.name);
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
-        btnGender = (SwitchButton)findViewById(R.id.btn_gender);
-        btnInterest = (SwitchButton)findViewById(R.id.btn_interest);
-        txtGender = (TextView)findViewById(R.id.txt_gender_man);
-        txtInterest = (TextView)findViewById(R.id.txt_interest_woman);
-        btnSelectDate = (Button)findViewById(R.id.btn_select_birthdate);
-        txtAge = (TextView)findViewById(R.id.txt_age);
+    }
 
-        // Progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setCancelable(false);
-
+    private void manageSession() {
         // Session manager
         session = new SessionManager(getApplicationContext());
 
@@ -81,7 +72,9 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
             startActivity(intent);
             finish();
         }
+    }
 
+    private void addLinksToViews() {
         btnGender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
@@ -147,6 +140,27 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
         });
     }
 
+    private void createViews() {
+    }
+
+    private void findViews() {
+        inputFullName = (EditText) findViewById(R.id.name);
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.password);
+        btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
+        btnGender = (SwitchButton)findViewById(R.id.btn_gender);
+        btnInterest = (SwitchButton)findViewById(R.id.btn_interest);
+        txtGender = (TextView)findViewById(R.id.txt_gender_man);
+        txtInterest = (TextView)findViewById(R.id.txt_interest_woman);
+        btnSelectDate = (Button)findViewById(R.id.btn_select_birthdate);
+        txtAge = (TextView)findViewById(R.id.txt_age);
+
+        // Progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+    }
+
     /**
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
@@ -164,7 +178,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
 
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Register Response: " + response.toString());
+                Log.d("", "Register Response: " + response.toString());
                 hideDialog();
 
                 try {
@@ -209,7 +223,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Registration Error: " + error.getMessage());
+                Log.e("", "Registration Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();

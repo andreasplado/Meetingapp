@@ -144,13 +144,13 @@
                 android:orientation="vertical"
                 android:paddingLeft="200dp">
 
-            <ee.metingapp.www.meetingapp.view.SwitchButton
+            <ee.metingapp.www.meetingapp.customelements.SwitchButton
                 android:id="@+id/btn_gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"/>
 
-            <ee.metingapp.www.meetingapp.view.SwitchButton
+            <ee.metingapp.www.meetingapp.customelements.SwitchButton
                 android:id="@+id/btn_interest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

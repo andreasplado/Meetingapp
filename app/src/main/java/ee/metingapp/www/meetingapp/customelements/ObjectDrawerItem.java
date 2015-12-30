@@ -1,4 +1,4 @@
-package ee.metingapp.www.meetingapp.view;
+package ee.metingapp.www.meetingapp.customelements;
 
 /**
  * Created by Andreas on 05.12.2015.

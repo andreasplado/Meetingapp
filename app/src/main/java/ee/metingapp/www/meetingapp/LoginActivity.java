@@ -46,16 +46,18 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        findViews();
+        createViews();
+        addLinksToViews();
+        manageSession();
+        fetchData();
+    }
 
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+    private void fetchData() {
 
-        // Progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setCancelable(false);
+    }
 
+    private void manageSession() {
         // SQLite database handler
         db = new SQLiteHandler(getApplicationContext());
 
@@ -69,7 +71,9 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
 
+    private void addLinksToViews() {
         // Login button Click Event
         btnLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -108,7 +112,18 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    private void createViews() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+    }
+
+    private void findViews() {
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.password);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
     }
 
     /**

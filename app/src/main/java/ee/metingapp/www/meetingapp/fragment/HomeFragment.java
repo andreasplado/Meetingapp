@@ -23,6 +23,13 @@ public class HomeFragment extends Fragment {
     private ArrayList<String> al;
     private SwipeFlingAdapterView flingContainer;
     private int i;
+    public static final String ARG_PAGE = "ARG_PAGE";
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -39,7 +46,6 @@ public class HomeFragment extends Fragment {
 
     private void swipeView(){
         //add the view via xml or programmatically
-
 
         al = new ArrayList<String>();
         al.add("php");

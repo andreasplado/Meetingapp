@@ -1,4 +1,4 @@
-package ee.metingapp.www.meetingapp.view;
+package ee.metingapp.www.meetingapp.customelements;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -1,4 +1,4 @@
-package ee.metingapp.www.meetingapp.view;
+package ee.metingapp.www.meetingapp.customelements;
 
 import android.content.Context;
 import android.content.res.TypedArray;

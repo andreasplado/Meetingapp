@@ -13,14 +13,14 @@ import ee.metingapp.www.meetingapp.R;
  */
 public class HotOrNotFragment extends Fragment {
 
-    private static final String ARG_POSITION = "position";
+    public static final String ARG_PAGE = "ARG_PAGE";
 
-    public static HotOrNotFragment newInstance(int position) {
-        HotOrNotFragment f = new HotOrNotFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        f.setArguments(b);
-        return f;
+    public static HotOrNotFragment newInstance(int page) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_PAGE, page);
+        HotOrNotFragment fragment = new HotOrNotFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

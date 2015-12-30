@@ -4,28 +4,36 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="48dip" />
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/colors"
-        android:layout_below="@+id/tabs"
-        tools:context=".MainActivity" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
 
-    <RelativeLayout
+
+    </LinearLayout>
+
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout
+            android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable" />
+        <android.support.v4.view.ViewPager
             android:id="@+id/mainContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </android.support.v4.view.ViewPager>
+        <LinearLayout
+            android:id="@+id/userContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
         <!--buttom menu -->
         <RelativeLayout
             android:layout_width="match_parent"
@@ -40,10 +48,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:foregroundGravity="center"
-                android:background="@null"
-                android:src="@drawable/ic_camera_white" />
+                android:background="@null" />
         </RelativeLayout>
-    </RelativeLayout>
+    </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
