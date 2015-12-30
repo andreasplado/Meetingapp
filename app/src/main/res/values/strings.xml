@@ -29,6 +29,7 @@
     <string name="message_hint">Say anything</string>
     <string name="profile_me">My Profile Pic</string>
     <string name="profile_other">Other profile pic</string>
+    <string name="facebook_app_id">Other profile pic</string>
 
     <string name="action_example">Example action</string>
     <string name="action_favorite">Favorite</string>
