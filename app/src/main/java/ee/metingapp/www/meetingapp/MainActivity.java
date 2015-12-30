@@ -36,7 +36,6 @@ import java.util.HashMap;
 import ee.metingapp.www.meetingapp.adapters.MainActivityFragmentPagerAdapter;
 import ee.metingapp.www.meetingapp.customelements.ImageConverter;
 import ee.metingapp.www.meetingapp.customelements.NavigationDrawerActivity;
-import ee.metingapp.www.meetingapp.fragment.HelpFragment;
 import ee.metingapp.www.meetingapp.fragment.HomeFragment;
 import ee.metingapp.www.meetingapp.fragment.PreferencesFragment;
 import utils.SQLiteHandler;
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity{
         //make drawer
         mNavItems.add(new NavItem("Home", "Meetup destination", R.drawable.abc_btn_radio_material));
         mNavItems.add(new NavItem("Preferences", "Change your preferences", R.drawable.abc_btn_radio_material));
-        mNavItems.add(new NavItem("About", "Get to know about us", R.drawable.abc_btn_radio_material));
+        mNavItems.add(new NavItem("Exit", "Log me out", R.drawable.abc_btn_radio_material));
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
         // Drawer Item click listeners
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity{
                 fragment = new PreferencesFragment();
                 break;
             case 2:
-                fragment = new HelpFragment();
+                logoutUser();
                 break;
             default:
                 fragment = new HomeFragment();

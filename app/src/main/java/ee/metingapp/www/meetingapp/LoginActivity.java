@@ -17,8 +17,6 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -106,12 +104,10 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),
                                 "Please enter the credentials!", Toast.LENGTH_LONG)
                                 .show();
-                        YoYo.with(Techniques.Shake).playOn(findViewById(R.id.btnLogin));
                     }
                 }else{
                     Toast.makeText(getApplicationContext(),
                             "You must connect to the internet first", Toast.LENGTH_LONG).show();
-                    YoYo.with(Techniques.Shake).playOn(findViewById(R.id.btnLogin));
                 }
             }
 
