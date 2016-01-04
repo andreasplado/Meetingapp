@@ -34,7 +34,7 @@ public class ChatFragment extends Fragment {
     private static String sUserId;
     private static final String TAG = ChatFragment.class.getName();
     public static final String USER_ID_KEY = "userId";
-    private static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
+    private static final int MAX_CHAT_MESSAGES_TO_SHOW = 500;
     private EditText etMessage;
     private Button btSend;
     private View view;
