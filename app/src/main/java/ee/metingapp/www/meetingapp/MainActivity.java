@@ -36,6 +36,7 @@ import java.util.HashMap;
 import ee.metingapp.www.meetingapp.adapters.MainActivityFragmentPagerAdapter;
 import ee.metingapp.www.meetingapp.customelements.ImageConverter;
 import ee.metingapp.www.meetingapp.customelements.NavigationDrawerActivity;
+import ee.metingapp.www.meetingapp.fragment.ChatFragment;
 import ee.metingapp.www.meetingapp.fragment.HomeFragment;
 import ee.metingapp.www.meetingapp.fragment.PreferencesFragment;
 import utils.SQLiteHandler;
@@ -57,6 +58,33 @@ public class MainActivity extends AppCompatActivity{
     private TabLayout tabLayoutMainActivity;
     private ViewPager viewPagerPages;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        displayChatFragmentIfNeeded();
+    }
+
+    private void displayChatFragmentIfNeeded() {
+        String toOpen = getIntent().getStringExtra("toOpen");
+        if(toOpen != null) {
+            if (toOpen.equals("ChatFragment")) {
+                displayChatFragment();
+            }
+        }
+    }
+
+    private void displayChatFragment() {
+        Fragment fragment = new ChatFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.mainContent, fragment)
+                .commit();
+    }
+
+    @Override
+    protected void onNewIntent (Intent intent) {
+        setIntent(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +98,7 @@ public class MainActivity extends AppCompatActivity{
         manageSession();
         fetchData();
         startMainFragment();
-
-
+        displayChatFragmentIfNeeded();
     }
 
     private void findCustomViews() {
