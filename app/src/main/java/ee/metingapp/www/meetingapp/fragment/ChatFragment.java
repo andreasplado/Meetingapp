@@ -8,16 +8,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
+import com.parse.ParsePushBroadcastReceiver;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.PushService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +39,8 @@ public class ChatFragment extends Fragment {
     private static String sUserId;
     private static final String TAG = ChatFragment.class.getName();
     public static final String USER_ID_KEY = "userId";
-    private static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
+    private static final int MAX_CHAT_MESSAGES_TO_SHOW = 500;
+    private static final int SCROLLABLE_HISTORY_BATCH_SIZE = 10;
     private EditText etMessage;
     private Button btSend;
     private View view;
@@ -44,6 +50,7 @@ public class ChatFragment extends Fragment {
     // Keep track of initial load to scroll to the bottom of the ListView
     private boolean mFirstLoad;
     private Handler handler = new Handler();
+    private List<Message> messagesFromServer;
 
 
     @Override
@@ -91,7 +98,9 @@ public class ChatFragment extends Fragment {
         etMessage = (EditText) view.findViewById(R.id.etMessage);
         btSend = (Button) view.findViewById(R.id.btSend);
         lvChat = (ListView) view.findViewById(R.id.lvChat);
+
         mMessages = new ArrayList<Message>();
+        messagesFromServer = new ArrayList<>();
         // Automatically scroll to the bottom when a data set change notification is received and only if the last item is already visible on screen. Don't scroll to the bottom otherwise.
         lvChat.setTranscriptMode(1);
         mFirstLoad = true;
@@ -115,6 +124,35 @@ public class ChatFragment extends Fragment {
                 etMessage.setText("");
             }
         });
+
+        lvChat.setOnScrollListener(new AbsListView.OnScrollListener() {
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                final ListView lw = lvChat;
+
+                if (scrollState == 0)
+                    Log.i("meetingapp", "scrolling stopped...");
+
+
+                if (view.getId() == lw.getId()) {
+                    final int currentFirstVisibleItem = lw.getFirstVisiblePosition();
+                    Log.d("meetingapp", String.valueOf(currentFirstVisibleItem));
+                    if (currentFirstVisibleItem == 0) {
+                        /*if (messagesFromServer.size() > SCROLLABLE_HISTORY_BATCH_SIZE * 2) {
+                            for (int i = 0; i < SCROLLABLE_HISTORY_BATCH_SIZE; ++i) {
+                                mMessages.add(messagesFromServer.get(messagesFromServer.size() - SCROLLABLE_HISTORY_BATCH_SIZE * 2 + i));
+                            }
+                        } else {
+                            mMessages.addAll(messagesFromServer);
+                        }
+                        Toast.makeText(getContext(), String.valueOf(mMessages.size()), Toast.LENGTH_LONG).show();
+                        mAdapter.notifyDataSetChanged();*/
+                    }
+                }
+            }
+        });
     }
 
     private void receiveMessage() {
@@ -128,14 +166,22 @@ public class ChatFragment extends Fragment {
         query.findInBackground(new FindCallback<Message>() {
             public void done(List<Message> messages, ParseException e) {
                 if (e == null) {
+                   /* messagesFromServer.addAll(messages);
                     mMessages.clear();
-                    mMessages.addAll(messages);
+                    if (messages.size() > SCROLLABLE_HISTORY_BATCH_SIZE) {
+                        for (int i = 0; i < SCROLLABLE_HISTORY_BATCH_SIZE; ++i) {
+                            mMessages.add(messages.get(messages.size() - SCROLLABLE_HISTORY_BATCH_SIZE + i));
+                        }
+                    } else {
+                        mMessages.addAll(messages);
+                    }
+                    Log.d("meetingapp", "receiveMessage");
                     mAdapter.notifyDataSetChanged(); // update adapter
                     // Scroll to the bottom of the list on initial load
                     if (mFirstLoad) {
                         lvChat.setSelection(mAdapter.getCount() - 1);
                         mFirstLoad = false;
-                    }
+                    }*/
                 } else {
                     Log.d("message", "Error: " + e.getMessage());
                 }

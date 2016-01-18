@@ -11,12 +11,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.PushService;
 
 import ee.metingapp.www.meetingapp.data.Message;
 import utils.LruBitmapCache;
 
 public class AppController extends Application {
+
 
     public static final String APPLICATION_ID = "iuVrVkaoKgydb27ocTvGEQOBSFAJIvVlzbSOSKJI";
     public static final String CLIENT_KEY = "MzBYxmWI9I3qEe22rhchYIiSU6H4PF6sr6hXxMQU";
@@ -28,15 +31,17 @@ public class AppController extends Application {
     private ImageLoader mImageLoader;
 
     private static AppController mInstance;
+    private PushService pushService;
 
     @Override
     public void onCreate() {
         super.onCreate();
         // Register your parse models here
+        Parse.enableLocalDatastore(this.getBaseContext());
+        Parse.initialize(this, APPLICATION_ID, CLIENT_KEY);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
         ParseObject.registerSubclass(Message.class);
         mInstance = this;
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, APPLICATION_ID, CLIENT_KEY);
     }
 
     public static synchronized AppController getInstance() {
