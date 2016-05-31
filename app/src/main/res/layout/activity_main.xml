@@ -17,17 +17,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.support.design.widget.TabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="scrollable" />
-        <android.support.v4.view.ViewPager
+            app:tabMode="scrollable"
+            style="@style/MyCustomTabLayout"/>
+
+        <ee.metingapp.www.meetingapp.customelements.NonSwipeableViewPager
             android:id="@+id/mainContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-        </android.support.v4.view.ViewPager>
+        </ee.metingapp.www.meetingapp.customelements.NonSwipeableViewPager>
         <LinearLayout
             android:id="@+id/userContent"
             android:layout_width="match_parent"
@@ -38,8 +41,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/colorPrimary"
-            android:layout_alignParentBottom="true"  >
+            android:layout_alignParentBottom="true">
 
             <ImageButton
                 android:id="@+id/btn_capture_picture"
@@ -89,8 +91,17 @@
                     android:layout_height="100dp"
                     android:id="@+id/profile_pic_small"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/lanny_barbie"
+                    android:visibility="gone"
                     />
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:id="@+id/imgProgressBar"
+                    android:indeterminate="true"
+                    app:mpb_progressStyle="circular"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
 
                 <TextView
                     android:id="@+id/userName"

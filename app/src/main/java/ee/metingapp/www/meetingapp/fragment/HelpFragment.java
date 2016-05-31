@@ -18,7 +18,7 @@ public class HelpFragment extends Fragment {
                                      savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.activity_upload,
+        View view =  inflater.inflate(R.layout.fragment_upload,
                 container, false);
         return view;
     }

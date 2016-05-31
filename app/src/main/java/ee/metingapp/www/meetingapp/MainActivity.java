@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -13,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,15 +32,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.mxn.soul.flowingdrawer_core.LeftDrawerLayout;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
+import app.AppConfig;
 import ee.metingapp.www.meetingapp.adapters.MainActivityFragmentPagerAdapter;
 import ee.metingapp.www.meetingapp.customelements.ImageConverter;
 import ee.metingapp.www.meetingapp.customelements.NavigationDrawerActivity;
+import ee.metingapp.www.meetingapp.data.User;
 import ee.metingapp.www.meetingapp.fragment.ChatFragment;
 import ee.metingapp.www.meetingapp.fragment.HomeFragment;
-import ee.metingapp.www.meetingapp.fragment.PreferencesFragment;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import utils.SQLiteHandler;
 import utils.SessionManager;
 
@@ -57,6 +63,10 @@ public class MainActivity extends AppCompatActivity{
     private ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
     private TabLayout tabLayoutMainActivity;
     private ViewPager viewPagerPages;
+    private RecyclerView rvFeed;
+    private LeftDrawerLayout mLeftDrawerLayout;
+    private MaterialProgressBar materialProgressBar;
+
 
     @Override
     protected void onResume() {
@@ -92,26 +102,33 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        findCustomViews();
         createViews();
         addLinksToViews();
-        manageSession();
         fetchData();
+        manageSession();
         startMainFragment();
         displayChatFragmentIfNeeded();
     }
 
-    private void findCustomViews() {
-
-    }
-
     private void fetchData() {
-        // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
-        String name = user.get("name");
-        String email = user.get("email");
-        userName.setText(name);
+        userName.setText(User.getName());
+        materialProgressBar.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(AppConfig.IMAGE_URL + User.getGender() + "/" + User.getId() + ".jpg")
+                .into(imgProfilePic, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        imgProfilePic.setVisibility(View.VISIBLE);
+                        materialProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
     }
+
 
     private void manageSession() {
         // SqLite database handler
@@ -133,19 +150,8 @@ public class MainActivity extends AppCompatActivity{
                 Intent i = new Intent(getApplicationContext(),
                         UserProfileActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
-            }
-        });
-        imgBtnCapture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TakeSnapActivity fragment = new TakeSnapActivity();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(R.id.mainContent, fragment)
-                        .commit();
-                mDrawerLayout.closeDrawers();
-                Log.e("info:", "Vajutasid nupule pildista");
             }
         });
     }
@@ -163,6 +169,7 @@ public class MainActivity extends AppCompatActivity{
                 MainActivity.this));
         tabLayoutMainActivity = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayoutMainActivity.setupWithViewPager(viewPagerPages);
+        materialProgressBar = (MaterialProgressBar)findViewById(R.id.imgProgressBar);
     }
 
     private void createViews(){
@@ -196,15 +203,22 @@ public class MainActivity extends AppCompatActivity{
 
 
     private void selectItemFromDrawer(int position) {
-        Fragment fragment = new PreferencesFragment();
+        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.btn_click);
+        final MediaPlayer mp2 = MediaPlayer.create(getApplicationContext(),R.raw.logout);
+        Fragment fragment = new HomeFragment();
         switch (position){
             case 0:
+                mp.start();
                 fragment = new HomeFragment();
                 break;
             case 1:
-                fragment = new PreferencesFragment();
+                mp.start();
+                Intent i = new Intent(MainActivity.this, UserPreferencesActivity.class);
+                startActivity(i);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
             case 2:
+                mp2.start();
                 logoutUser();
                 break;
             default:
@@ -248,6 +262,7 @@ public class MainActivity extends AppCompatActivity{
                 Intent in = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
                 //in.putExtra("FrequencyExtractorSettings", FESettings);
                 startActivity(in);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             } catch (Exception e) {
                 Log.i("navigationdrawertest", "Failed to launch NavigationDrawerActivity: " + e.getMessage());
             }
@@ -264,6 +279,7 @@ public class MainActivity extends AppCompatActivity{
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
     }
 
@@ -335,6 +351,8 @@ public class MainActivity extends AppCompatActivity{
         }else{
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
+                final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.logout);
+                mp.start();
                 return;
             }
 

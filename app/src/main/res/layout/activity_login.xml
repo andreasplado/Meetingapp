@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    android:background="@color/bg_login"
+    android:background="@drawable/background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
@@ -21,25 +20,25 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/white"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/input_login"
-            android:textColorHint="@color/input_login_hint" />
+            android:textColor="@color/mdtp_accent_color"
+            android:textColorHint="@color/input_login_hint"/>
 
         <EditText
             android:id="@+id/password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/white"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
-            android:textColor="@color/input_login"
+            android:textColor="@color/mdtp_accent_color"
             android:textColorHint="@color/input_login_hint" />
 
         <!-- Login Button -->
@@ -49,7 +48,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:background="@color/btn_login_bg"
+            android:background="@drawable/login_btn"
             android:text="@string/btn_login"
             android:textColor="@color/btn_login" />
 
@@ -59,7 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="30dp"
+            />
 
         <!-- Link to Login Screen -->
 
@@ -68,11 +68,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dip"
-            android:background="@null"
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15dp" />
+            android:textColor="@color/btn_login_bg"
+            android:textSize="15dp"
+            android:background="@android:color/transparent"/>
 
     </LinearLayout>
 

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -20,11 +19,11 @@ import ee.metingapp.www.meetingapp.fragment.TakeSnapFragment;
  */
 public class MainActivityFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Users", "Chat", "Capture" };
+    private String[] tabTitles = {"Main", "Chat", "Snap"};
     private int[] imageResId = {
-            R.drawable.ic_view_headline_black_18dp,
+            R.drawable.ic_whatshot_black_18dp,
             R.drawable.ic_face_black_18dp,
-            R.drawable.ic_chat_black_18dp
+            R.drawable.ic_camera_black_18dp
     };
     private Context context;
 
@@ -53,13 +52,14 @@ public class MainActivityFragmentPagerAdapter extends FragmentPagerAdapter {
 
     }
 
-    @Override
     public CharSequence getPageTitle(int position) {
-        Drawable image = ContextCompat.getDrawable(context, imageResId[position]);
+        // Generate title based on item position
+        Drawable image = context.getResources().getDrawable(imageResId[position]);
         image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        SpannableString sb = new SpannableString(" ");
+        // Replace blank spaces with image icon
+        SpannableString sb = new SpannableString("   " + tabTitles[position]);
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
         sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return tabTitles[position];
+        return sb;
     }
 }

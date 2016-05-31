@@ -6,11 +6,18 @@ package ee.metingapp.www.meetingapp.data;
 public class User {
 
     private static String id;
+    private static String email;
     private static String name;
     private static String age;
     private static String gender;
     private static String interestedIn;
     private static User dataObject = null;
+    private static String birthdate;
+    private static String radius;
+    private static double longitude;
+    private static double latitude;
+
+
 
     public static User getInstance() {
         if (dataObject == null)
@@ -57,5 +64,45 @@ public class User {
 
     public static void setName(String name) {
         User.name = name;
+    }
+
+    public static String getBirthdate() {
+        return birthdate;
+    }
+
+    public static void setBirthdate(String birthdate) {
+        User.birthdate = birthdate;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        User.email = email;
+    }
+
+    public static String getRadius() {
+        return radius;
+    }
+
+    public static void setRadius(String radius) {
+        User.radius = radius;
+    }
+
+    public static double getLongitude() {
+        return longitude;
+    }
+
+    public static void setLongitude(double longitude) {
+        User.longitude = longitude;
+    }
+
+    public static double getLatitude() {
+        return latitude;
+    }
+
+    public static void setLatitude(double latitude) {
+        User.latitude = latitude;
     }
 }

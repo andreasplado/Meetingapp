@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +26,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import app.AppConfig;
 import app.AppController;
@@ -45,6 +48,8 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
     private SQLiteHandler db;
     private SwitchButton btnGender, btnInterest;
     private TextView txtGender, txtInterest, txtAge;
+    private TextView txtBirthdate;
+    private DiscreteSeekBar radiusBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
             Intent intent = new Intent(RegisterActivity.this,
                     MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
         }
     }
@@ -104,10 +110,25 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                 String name = inputFullName.getText().toString().trim();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                String gender = txtGender.getText().toString().trim().substring(0, 1);
+                String interesetdIn = txtInterest.getText().toString().trim().substring(0, 1);
+                String birthDate = txtBirthdate.getText().toString().trim();
+                String age = txtAge.getText().toString().trim();
+                String radius = Integer.toString(radiusBar.getProgress());
 
-                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
-                    registerUser(name, email, password);
-                } else {
+                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty() && !age.equals('0')) {
+                    if(emailValidator(email) == false){
+                        Toast.makeText(getApplicationContext(),
+                                "The entered email is not valid", Toast.LENGTH_LONG)
+                                .show();
+                    }else if(Integer.parseInt(age)< 18) {
+                        Toast.makeText(getApplicationContext(),
+                                "You must be over 18 to use this application", Toast.LENGTH_LONG)
+                                .show();
+                    }else{
+                        registerUser(name, email, password, gender, interesetdIn, birthDate, radius);
+                    }
+                }else {
                     Toast.makeText(getApplicationContext(),
                             "Please enter your details!", Toast.LENGTH_LONG)
                             .show();
@@ -122,6 +143,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                 Intent i = new Intent(getApplicationContext(),
                         LoginActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             }
         });
@@ -155,6 +177,8 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
         txtInterest = (TextView)findViewById(R.id.txt_interest_woman);
         btnSelectDate = (Button)findViewById(R.id.btn_select_birthdate);
         txtAge = (TextView)findViewById(R.id.txt_age);
+        txtBirthdate = (TextView)findViewById(R.id.txt_birthdate);
+        radiusBar = (DiscreteSeekBar) findViewById(R.id.radius);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -166,10 +190,9 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
      * email, password) to register url
      * */
     private void registerUser(final String name, final String email,
-                              final String password) {
+                              final String password, final String gender, final String interestedIn, final String birthdate, final String radius) {
         // Tag used to cancel the request
         String tag_string_req = "req_register";
-
         pDialog.setMessage("Registering ...");
         showDialog();
 
@@ -192,11 +215,8 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                         JSONObject user = jObj.getJSONObject("user");
                         String name = user.getString("name");
                         String email = user.getString("email");
-                        String created_at = user
-                                .getString("created_at");
+                        String created_at = user.getString("created_at");
 
-                        // Inserting row in users table
-                        db.addUser(name, email, uid, created_at);
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -205,6 +225,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                                 RegisterActivity.this,
                                 LoginActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         finish();
                     } else {
 
@@ -237,12 +258,14 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                 params.put("name", name);
                 params.put("email", email);
                 params.put("password", password);
-
+                params.put("birthdate", birthdate);
+                params.put("gender", gender);
+                params.put("interested_in", interestedIn);
+                params.put("radius", radius);
                 return params;
             }
 
         };
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
@@ -259,6 +282,7 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
     public void onBackPressed() {
         Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(i);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
     }
 
@@ -266,6 +290,14 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String age =  getAge(year, monthOfYear, dayOfMonth);
         txtAge.setText(age);
+        monthOfYear = monthOfYear + 1;
+        if(monthOfYear < 10 && dayOfMonth < 10) {
+            txtBirthdate.setText("0" + dayOfMonth + "/0" + monthOfYear + "/" + year);
+        }else if(monthOfYear < 10) {
+            txtBirthdate.setText(dayOfMonth + "/0" + monthOfYear + "/" + year);
+        }else if(dayOfMonth < 10) {
+            txtBirthdate.setText("0" + dayOfMonth + "/" + monthOfYear + "/" + year);
+        }
     }
 
     public String getAge (int year, int month, int day) {
@@ -287,5 +319,15 @@ public class RegisterActivity extends Activity implements DatePickerDialog.OnDat
                     "You are too young to use this application", Toast.LENGTH_LONG)
                     .show();
         return Integer.toString(a);
+    }
+
+    private boolean emailValidator(String email)
+    {
+        Pattern pattern;
+        Matcher matcher;
+        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

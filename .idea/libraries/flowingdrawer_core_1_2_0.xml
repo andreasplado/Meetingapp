@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="flowingdrawer-core-1.2.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.mxn.soul/flowingdrawer-core/1.2.0/jars/classes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.mxn.soul/flowingdrawer-core/1.2.0/jars/libs/nineoldandroids-2.4.0.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.mxn.soul/flowingdrawer-core/1.2.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mxn.soul/flowingdrawer-core/1.2.0/f63aa9159be30426200c0d0be086798d2c9c2b87/flowingdrawer-core-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -14,4 +14,7 @@
     <dimen name="ksw_md_thumb_solid_size">20dp</dimen>
     <dimen name="ksw_md_thumb_shadow_size">21dp</dimen>
     <dimen name="ksw_md_thumb_shadow_offset">2dp</dimen>
+    <dimen name="btn_fab_size">56dp</dimen>
+    <dimen name="btn_fab_margins">16dp</dimen>
+    <dimen name="default_elevation">8dp</dimen>
 </resources>

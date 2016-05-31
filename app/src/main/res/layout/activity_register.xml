@@ -54,6 +54,33 @@
             android:singleLine="true"
             android:textColor="@color/input_register"
             android:textColorHint="@color/input_register_hint" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="30dp"
+                        android:paddingRight="10dp"
+                        android:layout_marginTop="50dp"
+                        android:text="Radius:"
+                        android:textColor="@color/input_register"/>
+                    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                        android:id="@+id/radius"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="45dp"
+                        app:dsb_min="1"
+                        app:dsb_max="150"
+                        />
+            </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -84,27 +111,12 @@
                     android:text="Age:"
                     android:textColor="@color/input_register"
                     android:paddingTop="23dp"/>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Radius:"
+                    android:text="Birthdate:"
                     android:textColor="@color/input_register"
-                    android:paddingTop="8dp"/>
-
-                <com.rey.material.widget.Slider
-                    style="@style/Material.Widget.Slider"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:paddingTop="50dp"
-                    android:layout_marginTop="50dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:gravity="center"
-                    app:sl_minValue="0"
-                    app:sl_maxValue="100"
-                    app:sl_value="50"
-                    />
+                    android:paddingTop="23dp"/>
 
 
             </LinearLayout>
@@ -136,6 +148,14 @@
                     android:text="3"
                     android:textColor="@color/input_register"
                     android:paddingTop="23dp"/>
+                <TextView
+                    android:id="@+id/txt_birthdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dd/mm/yyyy"
+                    android:textColor="@color/input_register"
+                    android:paddingTop="23dp"/>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -168,7 +188,6 @@
 
 
             </LinearLayout>
-
         </RelativeLayout>
 
         <!-- Login Button -->

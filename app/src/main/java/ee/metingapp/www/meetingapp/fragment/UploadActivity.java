@@ -36,8 +36,10 @@ import java.io.IOException;
 
 import app.AppConfig;
 import ee.metingapp.www.meetingapp.MainActivity;
+import ee.metingapp.www.meetingapp.R;
 import ee.metingapp.www.meetingapp.data.Image;
 import ee.metingapp.www.meetingapp.data.User;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import utils.AndroidMultiPartEntity;
 
 public class UploadActivity extends Activity {
@@ -51,16 +53,18 @@ public class UploadActivity extends Activity {
     private VideoView vidPreview;
     private Button btnUpload;
     long totalSize = 0;
+    private MaterialProgressBar materialProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(android.R.layout.);
+        setContentView(R.layout.fragment_upload);
         txtPercentage = (TextView) findViewById(R.id.txtPercentage);
         btnUpload = (Button) findViewById(R.id.btnUpload);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         vidPreview = (VideoView) findViewById(R.id.videoPreview);
+        materialProgressBar = (MaterialProgressBar) findViewById(R.id.progressBarAnimated);
 
 
         // Receiving the data from previous activity
@@ -85,6 +89,9 @@ public class UploadActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // uploading the file to server
+                materialProgressBar.setVisibility(View.VISIBLE);
+                btnUpload.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Uploading image" ,Toast.LENGTH_LONG).show();
                 new UploadFileToServer().execute();
             }
         });
@@ -125,17 +132,19 @@ public class UploadActivity extends Activity {
         @Override
         protected void onPreExecute() {
             // setting progress bar to zero
-            progressBar.setProgress(0);
+            //progressBar.setProgress(0);
+            materialProgressBar.setProgress(0);
             super.onPreExecute();
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
             // Making progress bar visible
-            progressBar.setVisibility(View.VISIBLE);
+            //progressBar.setVisibility(View.VISIBLE);
 
             // updating progress bar value
-            progressBar.setProgress(progress[0]);
+            //progressBar.setProgress(progress[0]);
+            materialProgressBar.setProgress(progress[0]);
 
             // updating percentage value
             txtPercentage.setText(String.valueOf(progress[0]) + "%");
@@ -222,11 +231,22 @@ public class UploadActivity extends Activity {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // do nothing
+                        finish();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
         AlertDialog alert = builder.create();
-        alert.show();
+        if(!this.isFinishing())
+        {
+            alert.show();
+        }
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(UploadActivity.this, MainActivity.class));
+        Toast.makeText(this, "Image upload cancelled", Toast.LENGTH_SHORT).show();
+    }
 }

@@ -8,12 +8,12 @@
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/frame"
-        android:background="#ffeee9e2"
+        android:background="@drawable/home_background"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         app:rotation_degrees="15.5"
-        tools:context=".MyActivity" />
+        tools:context=".MyActivity"/>
 
-    <include layout="@layout/buttons" />
+    <!--<include layout="@layout/random_user_profile" android:id="user_profile"/>-->
 
 </LinearLayout>

@@ -32,8 +32,17 @@
                     android:scaleType="centerCrop"
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="parallax"
-                    android:src="@drawable/lanny_barbie"
+                    android:id="@+id/profile_pic"
                     />
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:id="@+id/imgProgressBar"
+                    android:indeterminate="true"
+                    app:mpb_progressStyle="circular"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
 
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>

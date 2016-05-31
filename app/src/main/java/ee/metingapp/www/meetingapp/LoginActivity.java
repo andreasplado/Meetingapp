@@ -3,6 +3,7 @@ package ee.metingapp.www.meetingapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,9 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -27,6 +31,7 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce = false;
     private LoginButton loginWithFacebook;
     private CallbackManager callbackManager;
+    private String session_id;
+    private MediaPlayer mp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,27 +78,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void manageSession() {
-        // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
-
-        // Session manager
-        session = new SessionManager(getApplicationContext());
-
-        // Check if user is already logged in or not
-        if (session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-
     private void addLinksToViews() {
         // Login button Click Event
+        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.btn_click);
         btnLogin.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
+                mp.start();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 if (isNetworkConnected()) {
@@ -121,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),
                         RegisterActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             }
         });
@@ -169,10 +162,9 @@ public class LoginActivity extends AppCompatActivity {
 
         StringRequest strReq = new StringRequest(Method.POST,
                 AppConfig.URL_LOGIN, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response.toString());
+                Log.e("Login", "Login Response: " + response.toString());
                 hideDialog();
 
                 try {
@@ -186,21 +178,23 @@ public class LoginActivity extends AppCompatActivity {
                         session.setLogin(true);
 
                         // Now store the user in SQLite
-                        String uid = jObj.getString("uid");
-
+                        String uid = jObj.getString("id");
                         JSONObject user = jObj.getJSONObject("user");
                         String name = user.getString("name");
                         String email = user.getString("email");
-                        String created_at = user
-                                .getString("created_at");
+                        String birthdate = user.getString("birthdate");
+                        String gender = user.getString("gender");
+                        String interestedIn = user.getString("interested_in");
+                        String radius = user.getString("radius");
 
                         // Inserting row in users table
-                        db.addUser(name, email, uid, created_at);
+                        db.addUser(uid, name, email, birthdate, gender, interestedIn, radius);
 
                         // Launch main activity
                         Intent intent = new Intent(LoginActivity.this,
-                                MainActivity.class);
+                                GetUsersActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         finish();
                     } else {
                         // Error in login. Get the error message
@@ -221,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Login Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        "Username or password is incorrect", Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -236,10 +230,108 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
 
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                try {
+
+                    String jsonString = new String(response.data,
+                            HttpHeaderParser.parseCharset(response.headers));
+
+
+                    String header_response = String.valueOf(response.headers.values());
+                    int index1 = header_response.indexOf("PHPSESSID=");
+                    int index2 = header_response.indexOf("; path=/");
+
+                    Log.e("Error", "error is : " + index1 + "::" + index2);
+                    String sessionId = header_response.substring(index1, index2);
+                    AppConfig.SESSION_ID = header_response.substring(index1, index2);
+
+                    // this is your session id put it in the variable and then you can use it any where you want to
+
+                    return Response.success(new String(jsonString),
+                            HttpHeaderParser.parseCacheHeaders(response));
+
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                }
+                //return super.parseNetworkResponse(response);
+            }
         };
+
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    private void checkLoginRetrofit(final String email, final String password){
+
+        /*Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.MAIN_URL)
+                .build(); //Defining base URL
+
+
+        MyApi myApi = retrofit.create(MyApi.class);
+        myApi.login(email, password, new Callback<String>() {
+
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                String cookie = response.headers().get("PHPSESSID");
+                Log.e("Cookie", cookie);
+                AppConfig.SESSION_ID = cookie;
+                try {
+                    JSONObject jObj = new JSONObject(response.body().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                // Things what should happen then the response is not successful.
+            }
+
+        });
+        */
+
+    }
+
+    private void manageSession() {
+        // SQLite database handler
+        db = new SQLiteHandler(getApplicationContext());
+
+        // Session manager
+        session = new SessionManager(getApplicationContext());
+
+        // Check if user is already logged in or not
+        if (session.isLoggedIn()) {
+            // User is already logged in. Take him to main activity
+            Intent intent = new Intent(getApplicationContext(), GetUsersActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+    }
+
+    public void login(){
+        mp = MediaPlayer.create(getApplicationContext(), R.raw.btn_click);
+        mp.start();
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+        if (isNetworkConnected()) {
+            // Check for empty data in the form
+            if (!email.isEmpty() && !password.isEmpty()) {
+                // login user
+                checkLoginRetrofit(email, password);
+            } else {
+                // Prompt user to enter credentials
+                Toast.makeText(getApplicationContext(),
+                        "Please enter the credentials!", Toast.LENGTH_LONG)
+                        .show();
+            }
+        }else{
+            Toast.makeText(getApplicationContext(),
+                    "You must connect to the internet first", Toast.LENGTH_LONG).show();
+        }
     }
 
     private boolean isNetworkConnected() {
@@ -261,6 +353,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
+            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.logout);
+            mp.start();
             return;
         }
 

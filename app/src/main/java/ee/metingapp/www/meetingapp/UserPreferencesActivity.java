@@ -2,59 +2,226 @@ package ee.metingapp.www.meetingapp;
 
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p/>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
-public class UserPreferencesActivity extends AppCompatPreferenceActivity {
+import app.AppConfig;
+import app.AppController;
+import ee.metingapp.www.meetingapp.customelements.SeekBarPreference;
+import ee.metingapp.www.meetingapp.data.User;
+import utils.SQLiteHandler;
+
+public class UserPreferencesActivity extends AppCompatPreferenceActivity implements DatePickerDialog.OnDateSetListener {
+
+    private Preference editBirthdate, updateUser, editInterestedIn, editEmail, editGender, editName;
+    private ProgressDialog pDialog;
+    private SQLiteHandler db;
+    private SeekBarPreference seekBarPreference;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar();
+        setContentView(R.layout.user_preference_holder);
+        addPreferencesFromResource(R.xml.pref_general);
+        findViews();
+        createViews();
+        addLinksToViews();
+
+
+
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
+    private void findViews() {
+        editEmail = (Preference) findPreference("edit_email");
+        editName = (Preference) findPreference("edit_name");
+        editGender = (Preference) findPreference("edit_gender");
+        editInterestedIn = (Preference) findPreference("edit_interested_in");
+        editBirthdate = (Preference) findPreference("edit_birthdate");
+        updateUser = (Preference) findPreference("btn_update_user");
+        updateUser = (Preference) findPreference("btn_update_user");
+        seekBarPreference = (SeekBarPreference) findPreference("edit_radius");
+        if (User.getGender().equals("M")) {
+            editGender.setDefaultValue(1);
+        } else {
+            editGender.setDefaultValue(0);
+        }
+        if (User.getInterestedIn().equals("M")) {
+            editInterestedIn.setDefaultValue(1);
+        } else {
+            editInterestedIn.setDefaultValue(0);
+        }
+        editEmail.setSummary(User.getEmail());
+        editName.setSummary(User.getName());
+        editBirthdate.setSummary(User.getBirthdate());
+        seekBarPreference.setProgress(Integer.parseInt(User.getRadius()));
+        seekBarPreference.setSummary(User.getRadius());
+        editEmail.setSummary(User.getEmail());
+        editName.setSummary(User.getName());
+        editGender.setSummary(User.getGender());
+        editInterestedIn.setSummary(User.getInterestedIn());
+        editBirthdate.setSummary(User.getBirthdate());
+
+
+    }
+
+    private void createViews() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+
+    }
+
+    private void addLinksToViews() {
+        editBirthdate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                showDateDialog();
+                return false;
+            }
+
+
+            private void showDateDialog() {
+                Calendar now = Calendar.getInstance();
+                int year = Integer.parseInt(User.getBirthdate().substring(6, 10));
+                int month = Integer.parseInt(User.getBirthdate().substring(3, 5));
+                int day = Integer.parseInt(User.getBirthdate().substring(0, 2));
+                DatePickerDialog dpd = DatePickerDialog.newInstance(UserPreferencesActivity.this, year, month, day);
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        updateUser.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String email = (String) editEmail.getSummary();
+                String name = (String) editName.getSummary();
+                String genderString = (String) editGender.getSummary();
+                String interestedInString = (String) editInterestedIn.getSummary();
+                String gender = genderString.substring(0,1);
+                String interestedIn = interestedInString.substring(0,1);
+                String birthdate = (String) editBirthdate.getSummary();
+                String id = User.getId();
+                String radius = Integer.toString(seekBarPreference.getProgress());
+                updateUser(id, email, name, gender, interestedIn, birthdate, radius);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            return true;
+        }
+        return false;
+    }
+
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        if (monthOfYear < 10 && dayOfMonth < 10) {
+            editBirthdate.setSummary("0" + dayOfMonth + "/0" + monthOfYear + "/" + year);
+        } else if (monthOfYear < 10) {
+            editBirthdate.setSummary(dayOfMonth + "/0" + monthOfYear + "/" + year);
+        } else if (dayOfMonth < 10) {
+            editBirthdate.setSummary("0" + dayOfMonth + "/" + monthOfYear + "/" + year);
         }
     }
 
+    private void updateUser(final String id, final String email, final String name, final String gender, final String interestedIn, final String birthdate, final String radius) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_login";
 
-    /**
-     * {@inheritDoc}
-     */
+        pDialog.setMessage("Updating user settings ...");
+        showDialog();
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_UPDATE_USER, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                hideDialog();
+                db = new SQLiteHandler(getApplicationContext());
+                User.setId(id);
+                User.setName(name);
+                User.setBirthdate(birthdate);
+                User.setGender(gender);
+                User.setInterestedIn(interestedIn);
+                db.addUser(id, name, email, birthdate, gender, interestedIn, radius);
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("email", email);
+                params.put("name", name);
+                params.put("gender", gender);
+                params.put("interested_in", interestedIn);
+                params.put("birthdate", birthdate);
+                params.put("radius", radius);
+                return params;
+            }
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+
+
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this);
@@ -67,15 +234,6 @@ public class UserPreferencesActivity extends AppCompatPreferenceActivity {
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
     /**
@@ -104,7 +262,7 @@ public class UserPreferencesActivity extends AppCompatPreferenceActivity {
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
                     // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
+                    preference.setSummary("Silent");
 
                 } else {
                     Ringtone ringtone = RingtoneManager.getRingtone(
@@ -151,105 +309,13 @@ public class UserPreferencesActivity extends AppCompatPreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.btn_click);
+        mp.start();
+        finish();
     }
 
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
 }
