@@ -24,3 +24,10 @@ Database:MySql
 Login credentials for testing:</br>
 Username: o@o.com </br>
 Password: o
+
+You can 
+
+TODO:
+[]Get users nearby (radius was set on registration)
+[] Add chat
+[] Add service that checks if you got mach or not
