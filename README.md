@@ -24,7 +24,6 @@ Database:MySql
 Login credentials for testing:</br>
 Username: o@o.com </br>
 Password: o
------------------------------------
 
 You can 
 
