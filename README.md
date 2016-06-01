@@ -6,11 +6,11 @@ A RESTful  Web service with PHP Web Android client application
 ## Serverside application
 
 
-Written in :PHP 
-(Based on paradigm of an objekt-oriented programming)
-Web service host provider is 000webhost.com.
-Service end-points: http://phonewe.freeiz.com/suhtlus/
-Database:MySql
+Written in: PHP </br>
+(Based on paradigm of an objekt-oriented programming) </br>
+Web service host provider is 000webhost.com.</br>
+Service end-points: http://phonewe.freeiz.com/suhtlus/</br>
+Database: MySql</br>
 
 ![alt tag](http://enos.itcollege.ee/~aplado/autentimine/oo.png)
 
