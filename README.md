@@ -27,7 +27,7 @@ Password: o
 
 You can 
 
-TODO:
-Get users nearby (radius was set on registration)
-Add chat
-Add service that checks if you got mach or not
+TODO: </br>
+Get users nearby (radius was set on registration) </br>
+Add chat </br>
+Add service that checks if you got mach or not </br>
