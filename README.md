@@ -20,12 +20,9 @@ Database:MySql
 
 ![alt tag](http://enos.itcollege.ee/~aplado/autentimine/2016_06_01_02.52.57.png)
 
------------------------------------
 Login credentials for testing:</br>
 Username: o@o.com </br>
 Password: o
-
-You can 
 
 TODO: </br>
 Get users nearby (radius was set on registration) </br>
