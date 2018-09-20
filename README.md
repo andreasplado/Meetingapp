@@ -1,4 +1,4 @@
-# meetingapp
+# Meetingapp
 
 A RESTful  Web service with PHP Web Android client application
 
